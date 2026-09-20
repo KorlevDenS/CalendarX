@@ -23,7 +23,7 @@ public class CalendarMapper {
         );
     }
 
-    private MonthDto toDto(CalendarMonth month) {
+    public MonthDto toDto(CalendarMonth month) {
         return new MonthDto(
                 month.getMonth().getValue(),
                 month.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault()),

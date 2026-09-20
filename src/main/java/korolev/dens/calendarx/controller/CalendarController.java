@@ -3,7 +3,9 @@ package korolev.dens.calendarx.controller;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import korolev.dens.calendarx.dto.CalendarResponseDto;
+import korolev.dens.calendarx.dto.MonthDto;
 import korolev.dens.calendarx.mapper.CalendarMapper;
+import korolev.dens.calendarx.model.domain.CalendarMonth;
 import korolev.dens.calendarx.model.domain.CalendarYear;
 import korolev.dens.calendarx.service.CalendarService;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,19 @@ public class CalendarController {
     ) {
         CalendarYear c = calendarService.getCalendar(year);
         return ResponseEntity.ok(calendarMapper.toDto(c));
+    }
+
+    @GetMapping("/{year}/{month}")
+    public ResponseEntity<MonthDto> getYearMonth(
+            @PathVariable
+            @Min(1582) @Max(9999)
+            Integer year,
+            @PathVariable
+            @Min(1) @Max(12)
+            Integer month
+    ) {
+        CalendarMonth m = calendarService.getYearMonth(year, month);
+        return ResponseEntity.ok(calendarMapper.toDto(m));
     }
 
 }

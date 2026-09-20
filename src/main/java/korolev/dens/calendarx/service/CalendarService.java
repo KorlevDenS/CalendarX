@@ -1,5 +1,6 @@
 package korolev.dens.calendarx.service;
 
+import korolev.dens.calendarx.model.domain.CalendarMonth;
 import korolev.dens.calendarx.model.domain.CalendarYear;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,11 @@ public class CalendarService {
     public CalendarYear getCalendar(int year) {
         // more complex business logic can be added here
         return calendarFactory.createCalendar(Year.of(year));
+    }
+
+    public CalendarMonth getYearMonth(int year, int month) {
+        // more complex business logic can be added here
+        return getCalendar(year).getMonth(month);
     }
 
 }
