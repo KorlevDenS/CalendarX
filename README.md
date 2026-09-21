@@ -51,6 +51,8 @@
   [CalendarXAdvice](src/main/java/korolev/dens/calendarx/controller/CalendarXAdvice.java). Тестами покрывался только
 более-менее содержательный код.
 * Для Unit-тестов использовался Jupiter JUnit 5 и Mockito.
+* Настроен [простой CI](.github/workflows/ci.yml) через GitHub Actions. Запускаются тесты при push/pull request в
+main (тут единственная ветка) и затем проверяется сборка если тесты прошли. 
 
 ## Ключевые особенности
 

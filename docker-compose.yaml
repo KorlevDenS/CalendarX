@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  calendar:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8088:8088"
+    restart: unless-stopped
+    networks:
+      - monitoring-net
+
+  prometheus:
+    image: prom/prometheus:main
+    ports:
+      - "9090:9090"
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    networks:
+      - monitoring-net
+    depends_on:
+      - calendar
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring-net
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+configs:
+  prometheus_config:
+    file: prometheus/prometheus.yml
+
+networks:
+  monitoring-net:
+    driver: bridge
+
+  
