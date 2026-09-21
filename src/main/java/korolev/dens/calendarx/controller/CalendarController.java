@@ -1,5 +1,9 @@
 package korolev.dens.calendarx.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import korolev.dens.calendarx.dto.CalendarResponseDto;
@@ -28,17 +32,30 @@ public class CalendarController {
         this.calendarMapper = calendarMapper;
     }
 
+    @Operation(summary = "Получить календарь на запрашиваемый год")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Успешное получение календаря",
+            content = @Content(schema = @Schema(implementation = CalendarResponseDto.class))
+    )
+    @ApiStandardErrors
     @GetMapping("/{year}")
     public ResponseEntity<CalendarResponseDto> getCalendar(
             @PathVariable
-            @Min(1582)
-            @Max(9999)
+            @Min(1582) @Max(9999)
             Integer year
     ) {
         CalendarYear c = calendarService.getCalendar(year);
         return ResponseEntity.ok(calendarMapper.toDto(c));
     }
 
+    @Operation(summary = "Получить календарь на нужный месяц указанного года")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Успешное получение календаря на месяц",
+            content = @Content(schema = @Schema(implementation = MonthDto.class))
+    )
+    @ApiStandardErrors
     @GetMapping("/{year}/{month}")
     public ResponseEntity<MonthDto> getYearMonth(
             @PathVariable
