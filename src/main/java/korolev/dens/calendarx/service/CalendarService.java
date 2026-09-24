@@ -13,14 +13,18 @@ import java.time.Year;
 public class CalendarService {
 
     private final CalendarFactory calendarFactory;
+    private final MetricsService metricsService;
 
-    public CalendarService(CalendarFactory calendarFactory) {
+    public CalendarService(CalendarFactory calendarFactory, MetricsService metricsService) {
         this.calendarFactory = calendarFactory;
+        this.metricsService = metricsService;
     }
 
     public CalendarYear getCalendar(int year) {
-        // more complex business logic can be added here
-        return calendarFactory.createCalendar(Year.of(year));
+        CalendarYear c = calendarFactory.createCalendar(Year.of(year));
+        metricsService.setRequestsByLeapMetric(c.isLeap());
+        metricsService.setRequestsByRangeMetric(c.getYear().getValue());
+        return c;
     }
 
     public CalendarMonth getYearMonth(int year, int month) {

@@ -3,7 +3,7 @@ package korolev.dens.calendarx;
 import korolev.dens.calendarx.model.domain.CalendarDay;
 import korolev.dens.calendarx.model.domain.CalendarMonth;
 import korolev.dens.calendarx.model.domain.CalendarYear;
-import korolev.dens.calendarx.repository.CalendarTemplateRepository;
+import korolev.dens.calendarx.repository.GregorianCalendarTemplateRepository;
 import korolev.dens.calendarx.service.GregorianCalendarFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,8 +21,7 @@ class GregorianCalendarFactoryTest {
 
     @BeforeEach
     void setUp() {
-        CalendarTemplateRepository repository = new CalendarTemplateRepository();
-        repository.initTemplates();
+        GregorianCalendarTemplateRepository repository = new GregorianCalendarTemplateRepository();
         factory = new GregorianCalendarFactory(repository);
     }
 

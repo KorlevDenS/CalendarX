@@ -6,6 +6,7 @@ import korolev.dens.calendarx.model.domain.CalendarMonth;
 import korolev.dens.calendarx.model.domain.CalendarYear;
 import korolev.dens.calendarx.model.template.CalendarTemplate;
 import korolev.dens.calendarx.repository.CalendarTemplateRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
@@ -16,7 +17,10 @@ public class GregorianCalendarFactory implements CalendarFactory{
 
     private final CalendarTemplateRepository calendarTemplateRepository;
 
-    public GregorianCalendarFactory(CalendarTemplateRepository calendarTemplateRepository) {
+    public GregorianCalendarFactory(
+            @Qualifier("gregorianCalendarTemplateRepository")
+            CalendarTemplateRepository calendarTemplateRepository
+    ) {
         this.calendarTemplateRepository = calendarTemplateRepository;
     }
 
