@@ -11,7 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -29,26 +31,33 @@ class CalendarMapperTest {
 
     @Test
     void toDto_shouldMapCalendarMetadata() {
+        LocalDate loc = LocalDate.of(2024, Month.JANUARY, 1);
         CalendarYear year = new CalendarYear(
                 2024,
+                Year.of(2024).isLeap(),
                 List.of(new CalendarMonth(
-                                Month.JANUARY,
-                                List.of(new CalendarDay(2024, Month.JANUARY, 1))
+                        Month.JANUARY.getValue(),
+                        Month.JANUARY.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                        List.of(new CalendarDay(1, loc.getDayOfWeek()))
                 ))
         );
         CalendarResponseDto dto = mapper.toDto(year);
         assertThat(dto.year()).isEqualTo(2024);
         assertThat(dto.isLeap()).isTrue();
-        assertThat(dto.daysCount()).isEqualTo(366);
+        assertThat(dto.daysCount()).isEqualTo(1);
         assertThat(dto.months()).hasSize(1);
     }
 
     @Test
     void toDto_shouldMapMonthsAndDays() {
-        CalendarDay monday = new CalendarDay(2024, Month.JANUARY, 1);
-        CalendarDay saturday = new CalendarDay(2024, Month.JANUARY, 6);
-        CalendarMonth january = new CalendarMonth(Month.JANUARY, List.of(monday, saturday));
-        CalendarYear year = new CalendarYear(2024, List.of(january));
+        CalendarDay monday = new CalendarDay(1, DayOfWeek.MONDAY);
+        CalendarDay saturday = new CalendarDay(6, DayOfWeek.SATURDAY);
+        CalendarMonth january = new CalendarMonth(
+                Month.JANUARY.getValue(),
+                Month.JANUARY.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                List.of(monday, saturday)
+        );
+        CalendarYear year = new CalendarYear(2024, Year.of(2024).isLeap(), List.of(january));
 
         CalendarResponseDto dto = mapper.toDto(year);
         MonthDto monthDto = dto.months().getFirst();

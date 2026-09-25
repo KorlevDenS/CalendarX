@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolationException;
 import korolev.dens.calendarx.dto.ErrorResponseDto;
 import korolev.dens.calendarx.error.CalendarValidationException;
 import korolev.dens.calendarx.error.InvalidCalendarStateException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class CalendarXAdvice {
 
@@ -58,7 +60,8 @@ public class CalendarXAdvice {
 
     // Universal handler for other errors
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> handleException() {
+    public ResponseEntity<ErrorResponseDto> handleException(Exception ex) {
+        log.info("", ex);
         return ResponseEntity
                 .internalServerError()
                 .body(

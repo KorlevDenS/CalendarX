@@ -16,26 +16,26 @@ public class CalendarMapper {
 
     public CalendarResponseDto toDto(CalendarYear calendar) {
         return new CalendarResponseDto(
-                calendar.getYear().getValue(),
+                calendar.year(),
                 calendar.isLeap(),
-                calendar.getYear().length(),
-                calendar.getMonths().stream().map(this::toDto).toList()
+                calendar.length(),
+                calendar.months().stream().map(this::toDto).toList()
         );
     }
 
     public MonthDto toDto(CalendarMonth month) {
         return new MonthDto(
-                month.getMonth().getValue(),
-                month.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                month.monthNumber(),
+                month.name(),
                 month.getDaysCount(),
-                month.getDays().stream().map(this::toDto).toList()
+                month.days().stream().map(this::toDto).toList()
         );
     }
 
     private DayDto toDto(CalendarDay day) {
         return new DayDto(
-                day.getDate().getDayOfMonth(),
-                day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                day.dayOfMonth(),
+                day.dayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()),
                 day.isWeekend()
         );
     }

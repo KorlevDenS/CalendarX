@@ -4,7 +4,6 @@ import korolev.dens.calendarx.error.InvalidCalendarStateException;
 import lombok.Getter;
 
 import java.time.DayOfWeek;
-import java.time.Year;
 
 /// All 14 types of calendars.
 public enum CalendarType {
@@ -35,24 +34,23 @@ public enum CalendarType {
         this.startDayOfWeek = startDayOfWeek;
     }
 
-    public static CalendarType fromYear(Year year) {
-        boolean isLeap = year.isLeap();
-        DayOfWeek dayOfWeek = year.atDay(1).getDayOfWeek();
+    public static CalendarType fromYear(boolean isLeap, DayOfWeek firstDay) {
         CalendarType[] vals = CalendarType.values();
         if (isLeap) {
             for (int i = vals.length / 2; i < vals.length; i++) {
-                if (vals[i].startDayOfWeek == dayOfWeek) {
+                if (vals[i].startDayOfWeek == firstDay) {
                     return vals[i];
                 }
             }
         } else {
             for (int i = 0; i < vals.length / 2; i++) {
-                if (vals[i].startDayOfWeek == dayOfWeek) {
+                if (vals[i].startDayOfWeek == firstDay) {
                     return vals[i];
                 }
             }
         }
-        throw new InvalidCalendarStateException("Could not find existing calendar type for %s".formatted(year));
+        throw new InvalidCalendarStateException("Could not find existing calendar type for %s && %s"
+                .formatted(isLeap, firstDay));
     }
 
 }

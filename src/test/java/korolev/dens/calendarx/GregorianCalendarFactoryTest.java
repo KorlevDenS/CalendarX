@@ -35,10 +35,10 @@ class GregorianCalendarFactoryTest {
             1900  // невисокосный (делится на 100, но не на 400)
     })
     void createCalendar_shouldMatchJavaLocalDateForEveryDayOfYear(int yearValue) {
-        CalendarYear calendar = factory.createCalendar(Year.of(yearValue));
+        CalendarYear calendar = factory.createCalendar(yearValue);
 
         assertThat(calendar.isLeap()).isEqualTo(Year.of(yearValue).isLeap());
-        assertThat(calendar.getYear().length()).isEqualTo(Year.of(yearValue).length());
+        assertThat(calendar.length()).isEqualTo(Year.of(yearValue).length());
 
         LocalDate date = LocalDate.of(yearValue, 1, 1);
         LocalDate lastDate = LocalDate.of(yearValue, 12, 31);
@@ -46,8 +46,8 @@ class GregorianCalendarFactoryTest {
         while (!date.isAfter(lastDate)) {
             CalendarMonth month = calendar.getMonth(date.getMonthValue());
             CalendarDay day = month.getDay(date.getDayOfMonth());
-            assertThat(day.getDate()).isEqualTo(date);
-            assertThat(day.getDayOfWeek()).isEqualTo(date.getDayOfWeek());
+            assertThat(day.dayOfMonth()).isEqualTo(date.getDayOfMonth());
+            assertThat(day.dayOfWeek()).isEqualTo(date.getDayOfWeek());
 
             boolean expectedWeekend = date.getDayOfWeek() == DayOfWeek.SATURDAY
                     || date.getDayOfWeek() == DayOfWeek.SUNDAY;

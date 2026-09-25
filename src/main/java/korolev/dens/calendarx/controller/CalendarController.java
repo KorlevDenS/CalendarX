@@ -32,32 +32,32 @@ public class CalendarController {
         this.calendarMapper = calendarMapper;
     }
 
-    @Operation(summary = "Получить календарь на запрашиваемый год")
+    @Operation(summary = "Получить григорианский календарь на запрашиваемый год")
     @ApiResponse(
             responseCode = "200",
             description = "Успешное получение календаря",
             content = @Content(schema = @Schema(implementation = CalendarResponseDto.class))
     )
     @ApiStandardErrors
-    @GetMapping("/{year}")
-    public ResponseEntity<CalendarResponseDto> getCalendar(
+    @GetMapping("/gregorian/{year}")
+    public ResponseEntity<CalendarResponseDto> getGregorianCalendar(
             @PathVariable
             @Min(1582) @Max(9999)
             Integer year
     ) {
-        CalendarYear c = calendarService.getCalendar(year);
+        CalendarYear c = calendarService.getGregorianCalendar(year);
         return ResponseEntity.ok(calendarMapper.toDto(c));
     }
 
-    @Operation(summary = "Получить календарь на нужный месяц указанного года")
+    @Operation(summary = "Получить григорианский календарь на нужный месяц указанного года")
     @ApiResponse(
             responseCode = "200",
             description = "Успешное получение календаря на месяц",
             content = @Content(schema = @Schema(implementation = MonthDto.class))
     )
     @ApiStandardErrors
-    @GetMapping("/{year}/{month}")
-    public ResponseEntity<MonthDto> getYearMonth(
+    @GetMapping("/gregorian/{year}/{month}")
+    public ResponseEntity<MonthDto> getGregorianYearMonth(
             @PathVariable
             @Min(1582) @Max(9999)
             Integer year,
@@ -65,7 +65,47 @@ public class CalendarController {
             @Min(1) @Max(12)
             Integer month
     ) {
-        CalendarMonth m = calendarService.getYearMonth(year, month);
+        CalendarMonth m = calendarService.getGregorianYearMonth(year, month);
+        return ResponseEntity.ok(calendarMapper.toDto(m));
+    }
+
+    // Ethiopian
+    // For more calendars and more api it can be good idea to make separate controllers!
+
+    @Operation(summary = "Получить эфиопского календарь на запрашиваемый год")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Успешное получение календаря",
+            content = @Content(schema = @Schema(implementation = CalendarResponseDto.class))
+    )
+    @ApiStandardErrors
+    @GetMapping("/ethiopian/{year}")
+    public ResponseEntity<CalendarResponseDto> getCalendar(
+            @PathVariable
+            @Min(1) @Max(9999)
+            Integer year
+    ) {
+        CalendarYear c = calendarService.getEthiopianCalendar(year);
+        return ResponseEntity.ok(calendarMapper.toDto(c));
+    }
+
+    @Operation(summary = "Получить эфиопский календарь на нужный месяц указанного года")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Успешное получение календаря на месяц",
+            content = @Content(schema = @Schema(implementation = MonthDto.class))
+    )
+    @ApiStandardErrors
+    @GetMapping("/ethiopian/{year}/{month}")
+    public ResponseEntity<MonthDto> getYearMonth(
+            @PathVariable
+            @Min(1) @Max(9999)
+            Integer year,
+            @PathVariable
+            @Min(1) @Max(13)
+            Integer month
+    ) {
+        CalendarMonth m = calendarService.getEthiopianYearMonth(year, month);
         return ResponseEntity.ok(calendarMapper.toDto(m));
     }
 

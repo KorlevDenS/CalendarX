@@ -1,6 +1,7 @@
 package korolev.dens.calendarx.service;
 
 import korolev.dens.calendarx.model.CalendarType;
+import korolev.dens.calendarx.model.EthiopianMonth;
 import korolev.dens.calendarx.model.domain.CalendarDay;
 import korolev.dens.calendarx.model.domain.CalendarMonth;
 import korolev.dens.calendarx.model.domain.CalendarYear;
@@ -9,42 +10,48 @@ import korolev.dens.calendarx.repository.CalendarTemplateRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.time.Month;
-import java.time.Year;
-import java.time.format.TextStyle;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 
 @Service
-public class GregorianCalendarFactory implements CalendarFactory{
+public class EthiopianCalendarFactory implements CalendarFactory{
 
     private final CalendarTemplateRepository calendarTemplateRepository;
 
-    public GregorianCalendarFactory(
-            @Qualifier("gregorianCalendarTemplateRepository")
+    public EthiopianCalendarFactory(
+            @Qualifier("ethiopianCalendarTemplateRepository")
             CalendarTemplateRepository calendarTemplateRepository
     ) {
         this.calendarTemplateRepository = calendarTemplateRepository;
     }
 
-    @Override
-    public CalendarYear createCalendar(int year) {
-        Year gregYear = Year.of(year);
-        CalendarType type = CalendarType.fromYear(gregYear.isLeap(), gregYear.atDay(1).getDayOfWeek());
-        CalendarTemplate template = calendarTemplateRepository.getTemplate(type);
-        return fromTemplate(template, gregYear);
+    private LocalDate getGregorianFirstYearDay(int ethiopianYear) {
+        // Юлианский день (JDN) для 1 Мескерема 1 года Эфиопской эры = 1724221.
+        long jdn = 1724221L + 365L * (ethiopianYear - 1) + (ethiopianYear - 1) / 4;
+        // Перевод JDN в Unix Epoch Day (JDN 2440588 соответствует 1970-01-01)
+        long epochDay = jdn - 2440588L;
+        return LocalDate.ofEpochDay(epochDay);
     }
 
-    private CalendarYear fromTemplate(CalendarTemplate template, Year year) {
+    @Override
+    public CalendarYear createCalendar(int year) {
+        boolean isLeap = year % 4 == 3;
+        LocalDate gregorianFirstYearDay = getGregorianFirstYearDay(year);
+        CalendarType type = CalendarType.fromYear(isLeap, gregorianFirstYearDay.getDayOfWeek());
+        CalendarTemplate template = calendarTemplateRepository.getTemplate(type);
+        return fromTemplate(template, year);
+    }
+
+    private CalendarYear fromTemplate(CalendarTemplate template, int year) {
         List<CalendarMonth> months = template.months().stream().map(tm -> new CalendarMonth(
                 tm.monthNumber(),
-                Month.of(tm.monthNumber()).getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                EthiopianMonth.of(tm.monthNumber()).getName(),
                 tm.days().stream().map(td -> new CalendarDay(
                         td.dayOfMonth(),
                         td.dayOfWeek()
                 )).toList()
         )).toList();
-        return new CalendarYear(year.getValue(), year.isLeap(), months);
+        return new CalendarYear(year, template.calendarType().isLeap(), months);
     }
 
 }

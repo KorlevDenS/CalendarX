@@ -81,7 +81,7 @@ public class CalendarXAdviceTest {
 
     @Test
     void handleException_shouldReturnInternalServerError() {
-        ResponseEntity<ErrorResponseDto> response = calendarXAdvice.handleException();
+        ResponseEntity<ErrorResponseDto> response = calendarXAdvice.handleException(new Exception());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
 
         ErrorResponseDto body = response.getBody();
